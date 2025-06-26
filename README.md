@@ -215,3 +215,86 @@ curl -X POST http://localhost:4000/users/login \
   "token": "jwt_token"
 }
 ```
+
+---
+
+## Get User Profile
+
+### Endpoint
+
+`GET /users/profile`
+
+### Description
+Returns the authenticated user's profile information. Requires authentication (JWT token in cookie or Authorization header).
+
+### Headers
+- `Authorization: Bearer <token>` (if not using cookie)
+
+### Responses
+
+#### Success
+- **Status Code:** `200 OK`
+- **Body:**
+  ```json
+  {
+    "user": {
+      "id": "user_id",
+      "fullname": {
+        "firstname": "John",
+        "lastname": "Doe"
+      },
+      "email": "john.doe@example.com",
+      "socketID": null
+    }
+  }
+  ```
+
+#### Not Found
+- **Status Code:** `404 Not Found`
+- **Body:**
+  ```json
+  {
+    "message": "User not found"
+  }
+  ```
+
+#### Unauthorized
+- **Status Code:** `401 Unauthorized`
+- **Body:**
+  ```json
+  {
+    "message": "Authentication required"
+  }
+  ```
+
+---
+
+## Logout User
+
+### Endpoint
+
+`GET /users/logout`
+
+### Description
+Logs out the authenticated user by clearing the authentication token (cookie) and blacklisting the token.
+
+### Headers
+- `Authorization: Bearer <token>` (if not using cookie)
+
+### Responses
+
+#### Success
+- **Status Code:** `200 OK`
+- **Body:**
+  ```json
+  {
+    "message": "Logout successful"
+  }
+  ```
+
+### Example Response
+```json
+{
+  "message": "Logout successful"
+}
+```
