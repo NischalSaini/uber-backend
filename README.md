@@ -110,7 +110,6 @@ Send a JSON object with the following structure:
 "token": "jwt_token"
 }
 ```
-```
 
 ---
 
