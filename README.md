@@ -313,114 +313,25 @@ Logs out the authenticated user by clearing the authentication token (cookie) an
 Registers a new captain (driver) in the system. Validates input, hashes the password, creates the captain, and returns a JWT token along with captain and vehicle details.
 
 ### Request Body
-Send a JSON object with the following structure:
-
-```json
+```jsonc
 {
   "fullname": {
-    "firstname": "Jane",
-    "lastname": "Smith"
+    "firstname": "Jane", // string, required, min 3 chars
+    "lastname": "Smith"  // string, required, min 3 chars
   },
-  "email": "jane.smith@example.com",
-  "password": "yourpassword",
+  "email": "jane.smith@example.com", // string, required, valid email
+  "password": "yourpassword",         // string, required, min 6 chars
   "vehicle": {
-    "color": "Red",
-    "plate": "ABC123",
-    "capacity": 4,
-    "vehicleType": "car"
+    "color": "Red",                   // string, required, min 3 chars
+    "plate": "ABC123",                // string, required, min 3 chars
+    "capacity": 4,                     // integer, required, min 1
+    "vehicleType": "car"              // string, required, one of: car, bike, truck
   }
 }
 ```
 
-#### Field Requirements
-- `fullname.firstname` (string, required): At least 3 characters.
-- `fullname.lastname` (string, required): At least 3 characters.
-- `email` (string, required): Must be a valid email address.
-- `password` (string, required): At least 6 characters.
-- `vehicle.color` (string, required): At least 3 characters.
-- `vehicle.plate` (string, required): At least 3 characters.
-- `vehicle.capacity` (integer, required): At least 1.
-- `vehicle.vehicleType` (string, required): One of `car`, `bike`, `truck`.
-
-### Responses
-
-#### Success
-- **Status Code:** `201 Created`
-- **Body:**
-  ```json
-  {
-    "message": "Captain registered successfully",
-    "captain": {
-      "id": "captain_id",
-      "fullname": {
-        "firstname": "Jane",
-        "lastname": "Smith"
-      },
-      "email": "jane.smith@example.com",
-      "vehicle": {
-        "color": "Red",
-        "plate": "ABC123",
-        "capacity": 4,
-        "vehicleType": "car"
-      }
-    },
-    "token": "jwt_token"
-  }
-  ```
-
-#### Validation Error
-- **Status Code:** `400 Bad Request`
-- **Body:**
-  ```json
-  {
-    "errors": [
-      {
-        "msg": "First name must be at least 3 characters long",
-        "param": "fullname.firstname",
-        "location": "body"
-      }
-      // ...other errors
-    ]
-  }
-  ```
-
-#### Duplicate Email
-- **Status Code:** `400 Bad Request`
-- **Body:**
-  ```json
-  {
-    "message": "Captain with this email already exists"
-  }
-  ```
-
-#### Server Error
-- **Status Code:** `500 Internal Server Error`
-- **Body:**
-  ```json
-  {
-    "error": "Error message"
-  }
-  ```
-
-### Example Request
-```bash
-curl -X POST http://localhost:4000/captains/register \
-  -H "Content-Type: application/json" \
-  -d '{
-    "fullname": { "firstname": "Jane", "lastname": "Smith" },
-    "email": "jane.smith@example.com",
-    "password": "yourpassword",
-    "vehicle": {
-      "color": "Red",
-      "plate": "ABC123",
-      "capacity": 4,
-      "vehicleType": "car"
-    }
-  }'
-```
-
-### Example Response
-```json
+### Example Success Response
+```jsonc
 {
   "message": "Captain registered successfully",
   "captain": {
@@ -438,5 +349,33 @@ curl -X POST http://localhost:4000/captains/register \
     }
   },
   "token": "jwt_token"
+}
+```
+
+### Example Validation Error Response
+```jsonc
+{
+  "errors": [
+    {
+      "msg": "First name must be at least 3 characters long", // validation message
+      "param": "fullname.firstname",
+      "location": "body"
+    }
+    // ...other errors
+  ]
+}
+```
+
+### Example Duplicate Email Response
+```jsonc
+{
+  "message": "Captain with this email already exists"
+}
+```
+
+### Example Server Error Response
+```jsonc
+{
+  "error": "Error message"
 }
 ```
