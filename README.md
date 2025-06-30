@@ -298,3 +298,145 @@ Logs out the authenticated user by clearing the authentication token (cookie) an
   "message": "Logout successful"
 }
 ```
+
+---
+
+# Captain Registration API Documentation
+
+## Register Captain
+
+### Endpoint
+
+`POST /captains/register`
+
+### Description
+Registers a new captain (driver) in the system. Validates input, hashes the password, creates the captain, and returns a JWT token along with captain and vehicle details.
+
+### Request Body
+Send a JSON object with the following structure:
+
+```json
+{
+  "fullname": {
+    "firstname": "Jane",
+    "lastname": "Smith"
+  },
+  "email": "jane.smith@example.com",
+  "password": "yourpassword",
+  "vehicle": {
+    "color": "Red",
+    "plate": "ABC123",
+    "capacity": 4,
+    "vehicleType": "car"
+  }
+}
+```
+
+#### Field Requirements
+- `fullname.firstname` (string, required): At least 3 characters.
+- `fullname.lastname` (string, required): At least 3 characters.
+- `email` (string, required): Must be a valid email address.
+- `password` (string, required): At least 6 characters.
+- `vehicle.color` (string, required): At least 3 characters.
+- `vehicle.plate` (string, required): At least 3 characters.
+- `vehicle.capacity` (integer, required): At least 1.
+- `vehicle.vehicleType` (string, required): One of `car`, `bike`, `truck`.
+
+### Responses
+
+#### Success
+- **Status Code:** `201 Created`
+- **Body:**
+  ```json
+  {
+    "message": "Captain registered successfully",
+    "captain": {
+      "id": "captain_id",
+      "fullname": {
+        "firstname": "Jane",
+        "lastname": "Smith"
+      },
+      "email": "jane.smith@example.com",
+      "vehicle": {
+        "color": "Red",
+        "plate": "ABC123",
+        "capacity": 4,
+        "vehicleType": "car"
+      }
+    },
+    "token": "jwt_token"
+  }
+  ```
+
+#### Validation Error
+- **Status Code:** `400 Bad Request`
+- **Body:**
+  ```json
+  {
+    "errors": [
+      {
+        "msg": "First name must be at least 3 characters long",
+        "param": "fullname.firstname",
+        "location": "body"
+      }
+      // ...other errors
+    ]
+  }
+  ```
+
+#### Duplicate Email
+- **Status Code:** `400 Bad Request`
+- **Body:**
+  ```json
+  {
+    "message": "Captain with this email already exists"
+  }
+  ```
+
+#### Server Error
+- **Status Code:** `500 Internal Server Error`
+- **Body:**
+  ```json
+  {
+    "error": "Error message"
+  }
+  ```
+
+### Example Request
+```bash
+curl -X POST http://localhost:4000/captains/register \
+  -H "Content-Type: application/json" \
+  -d '{
+    "fullname": { "firstname": "Jane", "lastname": "Smith" },
+    "email": "jane.smith@example.com",
+    "password": "yourpassword",
+    "vehicle": {
+      "color": "Red",
+      "plate": "ABC123",
+      "capacity": 4,
+      "vehicleType": "car"
+    }
+  }'
+```
+
+### Example Response
+```json
+{
+  "message": "Captain registered successfully",
+  "captain": {
+    "id": "captain_id",
+    "fullname": {
+      "firstname": "Jane",
+      "lastname": "Smith"
+    },
+    "email": "jane.smith@example.com",
+    "vehicle": {
+      "color": "Red",
+      "plate": "ABC123",
+      "capacity": 4,
+      "vehicleType": "car"
+    }
+  },
+  "token": "jwt_token"
+}
+```
